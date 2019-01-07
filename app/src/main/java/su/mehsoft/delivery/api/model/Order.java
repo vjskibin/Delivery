@@ -14,7 +14,7 @@ public class Order {
 
     @SerializedName("creator_id")
     //@Expose
-    private int creatorId;
+    private Integer creatorId;
 
     @SerializedName("name")
     //@Expose
@@ -36,7 +36,7 @@ public class Order {
     //@Expose
     private String dateCreated;
 
-    public Order(int id, int creatorId, String name, String description, String location, float salary, String dateCreated) {
+    public Order(Integer id, Integer creatorId, String name, String description, String location, float salary, String dateCreated) {
         this.id = id;
         this.creatorId = creatorId;
         this.name = name;
@@ -55,11 +55,11 @@ public class Order {
         this.id = id;
     }
 
-    public int getCreatorId() {
+    public Integer getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(int creatorId) {
+    public void setCreatorId(Integer creatorId) {
         this.creatorId = creatorId;
     }
 
