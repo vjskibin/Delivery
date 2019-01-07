@@ -14,15 +14,19 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import su.mehsoft.delivery.algorithms.MD5;
+import su.mehsoft.delivery.api.AuthAPI;
 import su.mehsoft.delivery.api.OrderAPI;
+import su.mehsoft.delivery.api.apiimplementation.AuthManager;
 import su.mehsoft.delivery.api.apiimplementation.OrderManager;
 import su.mehsoft.delivery.api.model.Order;
 import su.mehsoft.delivery.api.model.RespondCode;
+import su.mehsoft.delivery.api.model.User;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static OrderAPI orderApi;
+    private static AuthAPI authApi;
     public String URL = "https://pxm.000webhostapp.com/api/";
 
     @Override
@@ -32,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         orderApi = OrderManager.getApi();
-
-        Call<List<Order>> orders = orderApi.getOrders();
+        authApi = AuthManager.getApi();
+        /*Call<List<Order>> orders = orderApi.getOrders();
         orders.enqueue(new Callback<List<Order>>() {
             @Override
             public void onResponse(Call<List<Order>> call, Response<List<Order>> response) {
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), String.format("NOT OK"), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
-        });
+        });*/
 
         /*Call<RespondCode> addOrder = orderApi.addOrder(1, "Продам отстойник", "Super class", "51.134234, 12.234285", 555, "2019-01-07 12:33:14");
         addOrder.enqueue(new Callback<RespondCode>() {
@@ -95,6 +99,23 @@ public class MainActivity extends AppCompatActivity {
                 t.printStackTrace();
             }
         });*/
+
+        Call<User> logIn = authApi.logIn("admin","admin","login");
+        logIn.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("APIRespond", "Succesfully logged in");
+
+                Log.d("APIRespond","Login: "+response.body().getLogin());
+                Log.d("APIRespond","Email: "+response.body().getEmail());
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("APIRespond", "Query failed");
+                t.printStackTrace();
+            }
+        });
 
     }
 }
