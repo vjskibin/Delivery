@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Delivery</string>
+    <string name="errorLogging">Error occured while signing in</string>
+    <string name="success">Success!</string>
 </resources>
