@@ -1,7 +1,10 @@
 package su.mehsoft.delivery;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,6 +68,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         boolean isLogged = sPrefs.getBoolean(PREFS_LOGGED, false);
         Integer userId = sPrefs.getInt(PREFS_ID, -1);
 
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
+        if(permissionCheck == PackageManager.PERMISSION_DENIED)
+            Toast.makeText(getApplicationContext(), String.format("NO INTERNET"), Toast.LENGTH_SHORT).show();
+
         Log.d("sPrefs","Saved token: " + savedToken);
         Log.d("sPrefs","isLogged: " + isLogged);
         Log.d("sPrefs","userId: " + userId);
@@ -91,6 +99,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     alreadyLogged = -1; //Something goes really wrong
                 }
             });
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (this) {
+                        try {
+                            wait(5000);
+                            if (alreadyLogged == 0) alreadyLogged = -1;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }).start();
 
             new Thread(new Runnable() {
                 @Override
