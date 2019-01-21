@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class OrdersActivity extends AppCompatActivity {
     private Integer ordersLoaded;
     private ArrayList<Order> allOrders;
     private AdapterOrder adbOrder;
+    private TextView tvHelloUser;
 
     public SharedPreferences sPrefs;
     private final String PREFS = "logInfo";
@@ -55,6 +57,8 @@ public class OrdersActivity extends AppCompatActivity {
     private void initViews() {
         ListView lvOrders = findViewById(R.id.lvOrders);
         ProgressBar pbOrdersLoading = findViewById(R.id.pbOrdersLoading);
+        tvHelloUser = findViewById(R.id.tvHelloUser);
+
     }
 
     @Override
@@ -67,64 +71,79 @@ public class OrdersActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
 
-        sPrefs = getSharedPreferences(PREFS,MODE_PRIVATE);
-        String savedToken = sPrefs.getString(PREFS_TOKEN, "-1");
-        boolean isLogged = sPrefs.getBoolean(PREFS_LOGGED, false);
-        Integer userId = sPrefs.getInt(PREFS_ID, -1);
+        switch(item.getItemId()) {
+            case R.id.menuAdd:
+                Intent intent = new Intent(this, NewOrderActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.menuLogOut:
 
 
-        SharedPreferences.Editor ed = sPrefs.edit();
-        ed.remove(PREFS_LOGGED);
-        ed.putBoolean(PREFS_LOGGED,false);
-        ed.remove(PREFS_EMAIL);
-        ed.remove(PREFS_ID);
-        ed.remove(PREFS_LOGIN);
-        ed.remove(PREFS_TOKEN);
-        ed.apply();
+                sPrefs = getSharedPreferences(PREFS,MODE_PRIVATE);
+                String savedToken = sPrefs.getString(PREFS_TOKEN, "-1");
+                boolean isLogged = sPrefs.getBoolean(PREFS_LOGGED, false);
+                Integer userId = sPrefs.getInt(PREFS_ID, -1);
 
 
-        sPrefs = getSharedPreferences(PREFS,MODE_PRIVATE);
-        String savedToken1 = sPrefs.getString(PREFS_TOKEN, "-1");
-        boolean isLogged1 = sPrefs.getBoolean(PREFS_LOGGED, false);
-        Integer userId1 = sPrefs.getInt(PREFS_ID, -1);
+                SharedPreferences.Editor ed = sPrefs.edit();
+                ed.remove(PREFS_LOGGED);
+                ed.putBoolean(PREFS_LOGGED,false);
+                ed.remove(PREFS_EMAIL);
+                ed.remove(PREFS_ID);
+                ed.remove(PREFS_LOGIN);
+                ed.remove(PREFS_TOKEN);
+                ed.apply();
 
-        logoutDone = 0;
-        authApi = AuthManager.getApi();
-        Call<RespondCode> logOut = authApi.logOut("logout",userId,savedToken);
-        logOut.enqueue(new Callback<RespondCode>() {
-            @Override
-            public void onResponse(Call<RespondCode> call, Response<RespondCode> response) {
-                Log.d("APIResponse",response.body().getRespondCode());
-                logoutDone = 1;
-            }
 
-            @Override
-            public void onFailure(Call<RespondCode> call, Throwable t) {
-                logoutDone = -1;
-                t.printStackTrace();
-            }
-        });
+                sPrefs = getSharedPreferences(PREFS,MODE_PRIVATE);
+                String savedToken1 = sPrefs.getString(PREFS_TOKEN, "-1");
+                boolean isLogged1 = sPrefs.getBoolean(PREFS_LOGGED, false);
+                Integer userId1 = sPrefs.getInt(PREFS_ID, -1);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (logoutDone == 0);
-                if(logoutDone == 1) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            synchronized (this) {
-                                Intent intent = new Intent(OrdersActivity.this, LoginActivity.class);
-                                startActivity(intent);
+                logoutDone = 0;
+                authApi = AuthManager.getApi();
+                Call<RespondCode> logOut = authApi.logOut("logout",userId,savedToken);
+                logOut.enqueue(new Callback<RespondCode>() {
+                    @Override
+                    public void onResponse(Call<RespondCode> call, Response<RespondCode> response) {
+                        Log.d("APIResponse",response.body().getRespondCode());
+                        logoutDone = 1;
+                    }
 
-                                OrdersActivity.this.finish();
-                            }
+                    @Override
+                    public void onFailure(Call<RespondCode> call, Throwable t) {
+                        logoutDone = -1;
+                        t.printStackTrace();
+                    }
+                });
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (logoutDone == 0);
+                        if(logoutDone == 1) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    synchronized (this) {
+                                        Intent intent = new Intent(OrdersActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+
+                                        OrdersActivity.this.finish();
+                                    }
+                                }
+                            });
                         }
-                    });
-                }
 
-            }
-        }).start();
+                    }
+                }).start();
+
+                break;
+
+        }
+
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -146,6 +165,17 @@ public class OrdersActivity extends AppCompatActivity {
         pbOrdersLoading = findViewById(R.id.pbOrdersLoading);
         pbOrdersLoading.setVisibility(ProgressBar.VISIBLE);
         allOrders = new ArrayList<Order>();
+
+        sPrefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        try {
+            String userHello = "Hello, " + sPrefs.getString(PREFS_LOGIN,"-1");
+            tvHelloUser.setText(userHello);
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
+
         Call<List<Order>> orders = orderApi.getOrders();
         orders.enqueue(new Callback<List<Order>>() {
             @Override

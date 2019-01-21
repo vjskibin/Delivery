@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onFailure(Call<RespondCode> call, Throwable t) {
                     alreadyLogged = -1; //Something goes really wrong
+                    Toast.makeText(LoginActivity.this,"Reauth failed", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -194,6 +195,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
                         isLogged = -1;
+                        Toast.makeText(LoginActivity.this,"Login failed", Toast.LENGTH_SHORT).show();
+                        t.printStackTrace();
                     }
                 });
                 new Thread(new Runnable() {

@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".OrdersActivity">
 
+    <TextView
+        android:id="@+id/tvHelloUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAlignment="center" />
+
     <ProgressBar
         android:id="@+id/pbOrdersLoading"
         style="?android:attr/progressBarStyle"
