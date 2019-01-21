@@ -2,4 +2,9 @@
     <string name="app_name">Delivery</string>
     <string name="errorLogging">Error occured while signing in</string>
     <string name="success">Success!</string>
+    <string name="passDoesNotMatch">Passwords does not match</string>
+    <string name="requireFields">All fields are required</string>
+    <string name="userExists">User aready exists</string>
+    <string name="errorRegistering">Error occured while registering</string>
+    <string name="logOutMenu">Log Out</string>
 </resources>

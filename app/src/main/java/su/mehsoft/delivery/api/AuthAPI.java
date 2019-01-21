@@ -20,4 +20,17 @@ public interface AuthAPI {
     Call<RespondCode> logOut(@Field("action") String action,
                               @Field("id") Integer id,
                               @Field("token") String token);
+
+    @POST("auth.php")
+    @FormUrlEncoded
+    Call<RespondCode> register(@Field("action") String action,
+                               @Field("login") String login,
+                               @Field("password") String password,
+                               @Field("email") String email);
+
+    @POST("auth.php")
+    @FormUrlEncoded
+    Call<RespondCode> checkToken(@Field("action") String action,
+                                 @Field("id") Integer id,
+                                 @Field("token") String token);
 }

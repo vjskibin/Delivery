@@ -61,7 +61,11 @@ public class AdapterOrder extends ArrayAdapter<Order> {
                 holder = (ViewHolder) vi.getTag();
             }
 
-            holder.display_name.setText(lOrder.get(position).getName());
+            String msg = "Name: " + lOrder.get(position).getName()+ "\n" +
+                    "Description: " + lOrder.get(position).getDescription() + "\n" +
+                    "Salary: " + lOrder.get(position).getSalary() + "\n" +
+                    "Location: " + lOrder.get(position).getLocation() + "\n";
+            holder.display_name.setText(msg);
         } catch (Exception e) {
             e.printStackTrace();
         }

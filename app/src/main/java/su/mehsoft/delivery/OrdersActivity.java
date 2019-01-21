@@ -1,9 +1,13 @@
 package su.mehsoft.delivery;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -16,27 +20,113 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import su.mehsoft.delivery.adapter.AdapterOrder;
+import su.mehsoft.delivery.api.AuthAPI;
 import su.mehsoft.delivery.api.OrderAPI;
+import su.mehsoft.delivery.api.apiimplementation.AuthManager;
 import su.mehsoft.delivery.api.apiimplementation.OrderManager;
 import su.mehsoft.delivery.api.model.Order;
+import su.mehsoft.delivery.api.model.RespondCode;
 
 public class OrdersActivity extends AppCompatActivity {
 
+
+
     private static OrderAPI orderApi;
+    private static AuthAPI authApi;
     private RecyclerView recyclerView;
     private List<Order> posts;
     private ListView lvOrders;
     private ProgressBar pbOrdersLoading;
     private Integer ordersLoaded;
     private ArrayList<Order> allOrders;
-    private AdapterOrder adbOrder;;
+    private AdapterOrder adbOrder;
 
-    String[] names = { "Иван", "Марья", "Петр", "Антон", "Даша", "Борис",
-            "Костя", "Игорь", "Анна", "Денис", "Андрей" };
+    public SharedPreferences sPrefs;
+    private final String PREFS = "logInfo";
+    private final String PREFS_LOGGED = "logged";
+    private final String PREFS_LOGIN = "user_login";
+    private final String PREFS_TOKEN = "token";
+    private final String PREFS_EMAIL = "user_email";
+    private final String PREFS_ID = "user_id";
+
+    private Integer logoutDone;
+
 
     private void initViews() {
         ListView lvOrders = findViewById(R.id.lvOrders);
         ProgressBar pbOrdersLoading = findViewById(R.id.pbOrdersLoading);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        sPrefs = getSharedPreferences(PREFS,MODE_PRIVATE);
+        String savedToken = sPrefs.getString(PREFS_TOKEN, "-1");
+        boolean isLogged = sPrefs.getBoolean(PREFS_LOGGED, false);
+        Integer userId = sPrefs.getInt(PREFS_ID, -1);
+
+
+        SharedPreferences.Editor ed = sPrefs.edit();
+        ed.remove(PREFS_LOGGED);
+        ed.putBoolean(PREFS_LOGGED,false);
+        ed.remove(PREFS_EMAIL);
+        ed.remove(PREFS_ID);
+        ed.remove(PREFS_LOGIN);
+        ed.remove(PREFS_TOKEN);
+        ed.apply();
+
+
+        sPrefs = getSharedPreferences(PREFS,MODE_PRIVATE);
+        String savedToken1 = sPrefs.getString(PREFS_TOKEN, "-1");
+        boolean isLogged1 = sPrefs.getBoolean(PREFS_LOGGED, false);
+        Integer userId1 = sPrefs.getInt(PREFS_ID, -1);
+
+        logoutDone = 0;
+        authApi = AuthManager.getApi();
+        Call<RespondCode> logOut = authApi.logOut("logout",userId,savedToken);
+        logOut.enqueue(new Callback<RespondCode>() {
+            @Override
+            public void onResponse(Call<RespondCode> call, Response<RespondCode> response) {
+                Log.d("APIResponse",response.body().getRespondCode());
+                logoutDone = 1;
+            }
+
+            @Override
+            public void onFailure(Call<RespondCode> call, Throwable t) {
+                logoutDone = -1;
+                t.printStackTrace();
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (logoutDone == 0);
+                if(logoutDone == 1) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            synchronized (this) {
+                                Intent intent = new Intent(OrdersActivity.this, LoginActivity.class);
+                                startActivity(intent);
+
+                                OrdersActivity.this.finish();
+                            }
+                        }
+                    });
+                }
+
+            }
+        }).start();
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -68,16 +158,7 @@ public class OrdersActivity extends AppCompatActivity {
                 try {
                     for (Order or: ordrs)
                     {
-                        Log.d("APIRespond",or.getId().toString());
-                        Log.d("APIRespond",or.getCreatorId().toString());
-                        Log.d("APIRespond",or.getName());
-                        Log.d("APIRespond",or.getDescription());
-                        Log.d("APIRespond",or.getSalary().toString());
-                        Log.d("APIRespond",or.getLocation());
-                        Log.d("APIRespond",or.getDateCreated()+"\n********************\n");
                         allOrders.add(or);
-                        names[i] = or.getName();
-                        i++;
                     }
 
                 }
