@@ -120,24 +120,40 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 @Override
                                 public void run() {
                                     synchronized (this) {
-                                        pbReg.setVisibility(ProgressBar.INVISIBLE);
-                                        if (isRegistered == -2) {
-                                            tvRegStatus.setText(getString(R.string.userExists));
-                                        }
-                                        else if (isRegistered == -1) {
-                                            tvRegStatus.setText(getString(R.string.errorRegistering));
-                                        }
-                                        else if (isRegistered == 1) {
+                                            pbReg.setVisibility(ProgressBar.INVISIBLE);
                                             tvRegStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
                                             tvRegStatus.setText(getString(R.string.success));
                                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                             startActivity(intent);
                                             RegisterActivity.this.finish();
-                                        }
+
                                     }
 
                                 }
                             });
+                        }
+                        else if (isRegistered == -2) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    synchronized (this) {
+                                        pbReg.setVisibility(ProgressBar.INVISIBLE);
+                                        tvRegStatus.setText(getString(R.string.userExists));
+                                    }
+                                }
+                            });
+                        }
+                        else if (isRegistered == -1) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    synchronized (this) {
+                                        pbReg.setVisibility(ProgressBar.INVISIBLE);
+                                        tvRegStatus.setText(getString(R.string.errorRegistering));
+                                    }
+                                }
+                            });
+
                         }
 
 

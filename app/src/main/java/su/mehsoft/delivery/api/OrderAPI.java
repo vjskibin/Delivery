@@ -25,6 +25,7 @@ public interface OrderAPI {
                                @Query("date_created") String date_created
     );
 
+    //delete order
     @GET("orders.php?action=delete")
     Call<RespondCode> deleteOrder(@Query("id") Integer id);
 }

@@ -42,26 +42,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Address"
-        android:inputType="textPassword" />
+        android:hint="Location" />
 
     <EditText
         android:id="@+id/etOrderSalary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Salary"
-        android:inputType="textPassword" />
+        android:hint="Salary" />
 
     <Button
         android:id="@+id/btnNewOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="Create" />
+        android:text="Add Order" />
 
     <ProgressBar
-        android:id="@+id/pbRNewOrder"
+        android:id="@+id/pbNewOrder"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

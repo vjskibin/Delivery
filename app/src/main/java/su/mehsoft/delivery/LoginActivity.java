@@ -150,25 +150,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 tvLoginStatus.setText("");
                 isLogged = 0;
                 pbLogin.setVisibility(ProgressBar.VISIBLE);
-                /*new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            synchronized (this) {
-                                wait(2000);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        pbLogin.setVisibility(ProgressBar.INVISIBLE);
-                                    }
-                                });
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-                */
                 String login = etLogin.getText().toString();
                 String password = etPassword.getText().toString();
                 Log.d("Logging","Login: "+login+" Password: "+password);
@@ -230,7 +211,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
                 break;
-
 
             case R.id.btnSignUp:
 

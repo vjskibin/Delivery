@@ -7,4 +7,6 @@
     <string name="userExists">User aready exists</string>
     <string name="errorRegistering">Error occured while registering</string>
     <string name="logOutMenu">Log Out</string>
+    <string name="errorPosting">Error occured while posting</string>
+    <string name="connectionError">Something goes wrong with connection</string>
 </resources>

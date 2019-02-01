@@ -219,9 +219,6 @@ public class OrdersActivity extends AppCompatActivity {
                             lvOrders = findViewById(R.id.lvOrders);
                             pbOrdersLoading.setVisibility(ProgressBar.INVISIBLE);
                             adbOrder= new AdapterOrder (OrdersActivity.this, 0, allOrders);
-
-                            /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(OrdersActivity.this,
-                                    android.R.layout.simple_list_item_1, names);*/
                             lvOrders.setAdapter(adbOrder);
                         }
                     });
